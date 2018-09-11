@@ -1,2 +1,3 @@
 t
-https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=IqLfAw8KXZUArjVEuMIrvgs&client_secret=WfmP9CQzm5gMCgnqsshqyqCHNezeKwtP
+https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=&client_secret=WfmP9CQzm5gMCgnqsshqyqCHNezeKwtP
+https://aip.baidubce.com/rpc/2.0/nlp/v1/lexer?charset=UTF-8&access_token=24.f9ba9c5241b67688bb4adbed8bc91dec.2592000.1485570332.282335-8574074
