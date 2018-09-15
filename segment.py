@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import urllib.request
 import time
 import json
+import jieba
 token_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=%s&client_secret=%s"
 # 1.获取token
 api_key = 'hGs3TEt3sN3XcI3VyIAyuTQp'
@@ -17,6 +20,7 @@ url_all = 'https://aip.baidubce.com/rpc/2.0/nlp/v1/lexer?access_token=' + str(to
 fs=['ai_challenger_oqmrc_trainingset.json','ai_challenger_oqmrc_testa.json','ai_challenger_oqmrc_validationset.json']
 
 def  segm(word1):
+
     data2 = {'text': word1}
     post_data = json.dumps(data2)
     header_dict = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko',
@@ -32,7 +36,8 @@ def  segm(word1):
     for i in res.get('items'):
         seg.append(i.get('item'))
     sentence = ' '.join(seg)
-    return sentence
+    return str(sentence)
+
 for s in fs:
     count=0
     with open('../input/{}'.format(s),'r',encoding='utf8') as f:
@@ -40,7 +45,7 @@ for s in fs:
         result=[]
         for l in lines:
             count+=1
-            time.sleep(1/4)
+
             if count%100==0:
                 print(count,len(lines),s)
             ge = json.loads(l)
@@ -48,6 +53,8 @@ for s in fs:
             passage=ge.get('passage')
             query = ge.get('query')
             retry=10
+
+            time.sleep(1.01 / 5)
             while retry>0:
                 try:
                     ge['passage']=segm(passage)
@@ -57,6 +64,7 @@ for s in fs:
                     retry-=1
                     if retry<1:
                         ge['retry']=True
+
                         print(passage)
                         print(e)
 
@@ -74,9 +82,10 @@ for s in fs:
                         print(e)
 
 
-            result.append(json.dumps(ge))
-
-    with open('../input/{}'.format(s.replace('json','seg')),'w',encoding='utf8') as f:
-        for l in result:
-           f.writelines(l+'\n')
+            result.append(json.dumps(ge,ensure_ascii=False))
+            if count%500==0:
+                with open('../input/{}'.format(s.replace('json','seg')),'a',encoding='utf8') as f:
+                    for l in result:
+                       f.writelines(l+'\n')
+                result=[]
 
