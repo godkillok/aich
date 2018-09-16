@@ -32,42 +32,65 @@ with open('../input/ai_challenger_oqmrc_trainingset.json','r',encoding='utf8') a
             web_site.append(url.split('//')[1].split('/')[0])
             # web_site.append(url.split('//')[1].split('/')[0].split('.')[1])
     ct=Counter(web_site)
-# print(ct.most_common(1000))
+print(ct.most_common(1000))
 
 ans=[]
+posi=[]
+
+def semtition(item):
+    item.get('')
+
+
+def remove_other(text):
+    tx=text
+    if text.isdigit():
+        return text
+    else:
+        if re.search('[\u4e00-\u9fa5]+\w*[\u4e00-\u9fa5]+',text).group(0)!=tx:
+            print((re.search('[\u4e00-\u9fa5]+\w*[\u4e00-\u9fa5]+',text).group(0),tx))
+        return re.search('[\u4e00-\u9fa5]+\w*[\u4e00-\u9fa5]+',text).group(0)
+
 with open('../input/ai_challenger_oqmrc_trainingset.json','r',encoding='utf8') as f:
     lines=f.readlines()
+    print(len(lines))
+
+
+
     for l in lines:
         ge=json.loads(l)
         url=ge.get('alternatives')
-        flag = True
+
         v_list=' '.join(sorted(url.split('|')))
         if '不'  in v_list or '没' in v_list:
             ans.append('不')
-            flag = False
+            try:
+                pos=[u for u  in url.split('|') if '不'  in u  ][0]
+                if '/' in pos:
+                    pos = [u for u in pos.split('/') if '不' in u][0]
+                if '|' in pos:
+                    pos = [u for u in pos.split('|') if '不' in u][0]
+                pos=remove_other(pos)
+                if pos[0] == '不':
+                    if len(pos) > 1:
+                        posi.append(pos[1:].strip())
+                    elif len(pos)==1:
+                        pos= [u for u  in url.split('|') if '不' not in u and '无法' not in u  ][0]
+                        pos = remove_other(pos)
+                        if '是' !=  pos:
+                            semtition(ge)
+
+            except:
+                pass
+                # print( url.split('|'))
+                # print(ge)
+
         else:
             ans.append(v_list)
     ct=Counter(ans)
-# print(ct.most_common(1000))
+print(ct.most_common(1000))
+print(list(set(posi)))
+#
 
-ans=[]
-co=0
-cr=0
-with open('../input/ai_challenger_oqmrc_trainingset.json','r',encoding='utf8') as f:
-    lines=f.readlines()
-    for l in lines:
-        ge=json.loads(l)
-        url=ge.get('answer')
-
-        # if '无法确定'==url and (('看你' in ge.get('passage') and '都' not in ge.get('passage') and '如果' not in ge.get('passage') and '的话' not in ge.get('passage')) ):
-        #     co+=1
-        #     if co<20:
-        #         print(l)
-        if '无法确定'!=url and (('看你' in ge.get('passage') and '查看' not in ge.get('passage') and '都' not in ge.get('passage') and '如果' not in ge.get('passage') and '的话' not in ge.get('passage')) ):
-            cr+=1
-            if cr<20:
-                print(l)
-print(cr,co)
 
 # '看你'
 # '看后面考试的时候教练会不会与你联系'

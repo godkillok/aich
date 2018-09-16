@@ -15,7 +15,8 @@ class_label={
     'auto':['auto','car','che'],
     'wenwen':['zhidao','wenwen','ask','zhinan']
 }
-
+import keras
+keras.layers.wrappers.Bidirectional(layer, merge_mode='concat', weights=None)
 with open('../input/ai_challenger_oqmrc_trainingset.json','r',encoding='utf8') as f:
     lines=f.readlines()
     for l in lines:
